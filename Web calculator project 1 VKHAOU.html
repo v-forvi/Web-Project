@@ -1,0 +1,181 @@
+<!DOCTYPE html>                 
+<html lang="en">       
+<head>                          
+    <meta charset="UTF-8">      
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vi's Calculator Project</title>
+    <style>
+        h1 {
+            color: hsl(0, 49%, 83%); 
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-size: 32px;
+            padding: 10px;
+            text-align: center;
+            border-bottom: 3px solid currentColor;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        .calculator {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        }
+        #display {
+            width: 100%;
+            height: 60px;
+            margin-bottom: 20px;
+            font-size: 24px;
+            text-align: right;
+            padding: 10px;
+            box-sizing: border-box;
+            border: none;
+            border-radius: 5px;
+            background-color: #eee;
+        }
+        .buttons {
+            display: grid;
+            gap: 10px;
+        }
+        .button-rows {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        button {
+            padding: 15px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #666;
+            color: white;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #777;
+        }
+        button[data-type="operator"] {
+            background-color: #f4a460;
+        }
+
+        button[data-type="operator"]:hover {
+            background-color: #e39350;
+        }
+        .zero-button {
+            grid-column: span 3;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h1>Vi's Calculator</h1>
+        <input type="text" readonly id="display" placeholder="Try Me!">
+
+        <div class="buttons">
+            <div class="button-rows">
+                <button data-type="operator">AC</button>
+                <button data-type="operator">DEL</button>
+                <button data-type="operator">/</button>
+                <button data-type="operator">*</button>
+            </div>
+            <div class="button-rows">
+                <button data-type="number">7</button>
+                <button data-type="number">8</button>
+                <button data-type="number">9</button>
+                <button data-type="operator">+</button>
+            </div>
+            <div class="button-rows">
+                <button data-type="number">4</button>
+                <button data-type="number">5</button>
+                <button data-type="number">6</button>
+                <button data-type="operator">-</button>
+            </div>
+            <div class="button-rows">
+                <button data-type="number">1</button>
+                <button data-type="number">2</button>
+                <button data-type="number">3</button>
+                <button data-type="operator">=</button>
+            </div>
+            <div class="button-rows">
+                <button data-type="number" class="zero-button">0</button>
+                <button data-type="number">.</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        const display = document.getElementById('display');
+        console.log("Display element found:", display);
+        let firstNumber = '';
+        let operator = '';
+        let newNumber = true;
+        
+        const numberButtons = document.querySelectorAll('button[data-type="number"]');
+        numberButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                if (newNumber) {
+                    display.value = button.textContent; 
+                    newNumber = false;
+                } else { 
+                    display.value += button.textContent;
+                }               
+            });
+        });
+        const operatorButtons = document.querySelectorAll('button[data-type="operator"]');
+        operatorButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const currentOperator = button.textContent; 
+
+                switch(currentOperator) {
+                    case 'AC':
+                        display.value = '';
+                        firstNumber = '';
+                        operator = '';
+                        break;
+                
+                     case 'DEL':
+                        display.value = display.value.slice(0, -1);
+                        break;
+                
+                    case '=':
+                        if(operator && firstNumber) {
+                            const secondNumber = display.value;
+                            switch(operator) {
+                                case '+':
+                                    display.value = parseFloat(firstNumber) + parseFloat(secondNumber);
+                                    break;
+                                case '-':
+                                    display.value = parseFloat(firstNumber) - parseFloat(secondNumber);
+                                    break;
+                                case '*':
+                                    display.value = parseFloat(firstNumber) * parseFloat(secondNumber);
+                                    break;
+                                case '/':
+                                    display.value = parseFloat(firstNumber) / parseFloat(secondNumber);
+                                    break;
+                    }
+                    firstNumber = '';
+                    operator = '';
+                }
+                break;
+                
+            default:
+                firstNumber = display.value;
+                operator = currentOperator;
+                newNumber = true; 
+                break;
+        }
+    });
+});
+               
+    </script>
+</body>
+</html>
